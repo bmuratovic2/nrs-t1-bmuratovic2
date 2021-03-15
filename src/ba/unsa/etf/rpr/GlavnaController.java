@@ -30,6 +30,7 @@ public class GlavnaController {
     public TableColumn<Grad,String> colGradDrzava;
     private GeografijaDAO dao;
     private ObservableList<Grad> listGradovi;
+    public TableColumn colGradPostanskiBroj;
 
     public GlavnaController() {
         dao = GeografijaDAO.getInstance();
@@ -43,6 +44,7 @@ public class GlavnaController {
         colGradNaziv.setCellValueFactory(new PropertyValueFactory("naziv"));
         colGradStanovnika.setCellValueFactory(new PropertyValueFactory("brojStanovnika"));
         colGradDrzava.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDrzava().getNaziv()));
+        colGradPostanskiBroj.setCellValueFactory(new PropertyValueFactory("postanskiBroj"));
     }
 
     public void actionDodajGrad(ActionEvent actionEvent) {

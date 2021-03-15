@@ -8,6 +8,11 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class GradController {
@@ -16,6 +21,7 @@ public class GradController {
     public ChoiceBox<Drzava> choiceDrzava;
     public ObservableList<Drzava> listDrzave;
     private Grad grad;
+    public TextField fieldPostanskiBroj;
 
     public GradController(Grad grad, ArrayList<Drzava> drzave) {
         this.grad = grad;
@@ -28,6 +34,7 @@ public class GradController {
         if (grad != null) {
             fieldNaziv.setText(grad.getNaziv());
             fieldBrojStanovnika.setText(Integer.toString(grad.getBrojStanovnika()));
+            fieldPostanskiBroj.setText(Integer.toString(grad.getPostanskiBroj()));
             // choiceDrzava.getSelectionModel().select(grad.getDrzava());
             // ovo ne radi jer grad.getDrzava() nije identički jednak objekat kao član listDrzave
             for (Drzava drzava : listDrzave)
@@ -48,6 +55,7 @@ public class GradController {
         stage.close();
     }
 
+
     public void clickOk(ActionEvent actionEvent) {
         boolean sveOk = true;
 
@@ -59,6 +67,22 @@ public class GradController {
             fieldNaziv.getStyleClass().removeAll("poljeNijeIspravno");
             fieldNaziv.getStyleClass().add("poljeIspravno");
         }
+
+       Thread thread1 = new Thread(() -> {
+            String link = "http://c9.etf.unsa.ba/proba/postanskiBroj.php?postanskiBroj=71000";
+            link += fieldPostanskiBroj.getText().trim();
+            try {
+                URL url = new URL(link);
+                BufferedReader ulaz = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+                String json = "", line = null;
+                while ((line = ulaz.readLine()) != null)
+                    json = json + line;
+                ulaz.close();
+
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        });
 
 
         int brojStanovnika = 0;
