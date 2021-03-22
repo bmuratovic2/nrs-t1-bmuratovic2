@@ -1,4 +1,4 @@
-/*package ba.unsa.etf.rpr;
+package ba.unsa.etf.rpr;
 
 
 import javafx.fxml.FXMLLoader;
@@ -143,4 +143,3 @@ public class Zadatak1GradControllerTest {
     }
 }
 
-*/

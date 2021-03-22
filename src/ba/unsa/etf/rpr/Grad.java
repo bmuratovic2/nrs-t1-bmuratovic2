@@ -6,13 +6,15 @@ public class Grad {
     private int brojStanovnika;
     private Drzava drzava;
     private int postanskiBroj;
+    private String slika;
 
-    public Grad(int id, String naziv, int brojStanovnika, Drzava drzava, int postanskiBroj) {
+    public Grad(int id, String naziv, int brojStanovnika, Drzava drzava, int postanskiBroj,String slika) {
         this.id = id;
         this.naziv = naziv;
         this.brojStanovnika = brojStanovnika;
         this.drzava = drzava;
         this.postanskiBroj = postanskiBroj;
+        this.slika = slika;
     }
 
     public int getPostanskiBroj() {
@@ -56,6 +58,14 @@ public class Grad {
 
     public void setDrzava(Drzava drzava) {
         this.drzava = drzava;
+    }
+
+    public String getSlika() {
+        return slika;
+    }
+
+    public void setSlika(String slika) {
+        this.slika = slika;
     }
 
     @Override

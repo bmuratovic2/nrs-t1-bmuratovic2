@@ -1,19 +1,27 @@
 package ba.unsa.etf.rpr;
 
+import com.sun.javafx.menu.MenuItemBase;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GradController {
     public TextField fieldNaziv;
@@ -22,6 +30,8 @@ public class GradController {
     public ObservableList<Drzava> listDrzave;
     private Grad grad;
     public TextField fieldPostanskiBroj;
+    public Button btnOk;
+    public Button btnCancel;
 
     public GradController(Grad grad, ArrayList<Drzava> drzave) {
         this.grad = grad;
@@ -55,34 +65,40 @@ public class GradController {
         stage.close();
     }
 
+    private void ulazi() {
+        fieldNaziv.setEditable(true);
+        fieldBrojStanovnika.setEditable(true);
+        fieldPostanskiBroj.setEditable(true);
+        choiceDrzava.disableProperty().setValue(false);
+        ;
+        fieldNaziv.getScene().setCursor(Cursor.DEFAULT);
+        btnOk.disableProperty().setValue(false);
+        btnCancel.disableProperty().setValue(false);
+    }
+
+    private void ulazi2() {
+        fieldNaziv.setEditable(false);
+        fieldBrojStanovnika.setEditable(false);
+        fieldPostanskiBroj.setEditable(false);
+        choiceDrzava.disableProperty().setValue(true);
+        fieldNaziv.getScene().setCursor(Cursor.WAIT);
+        btnOk.disableProperty().setValue(true);
+        btnCancel.disableProperty().setValue(true);
+    }
 
     public void clickOk(ActionEvent actionEvent) {
-        boolean sveOk = true;
+
+        ulazi2();
+        AtomicBoolean sveOk = new AtomicBoolean(true);
 
         if (fieldNaziv.getText().trim().isEmpty()) {
             fieldNaziv.getStyleClass().removeAll("poljeIspravno");
             fieldNaziv.getStyleClass().add("poljeNijeIspravno");
-            sveOk = false;
+            sveOk.set(false);
         } else {
             fieldNaziv.getStyleClass().removeAll("poljeNijeIspravno");
             fieldNaziv.getStyleClass().add("poljeIspravno");
         }
-
-       Thread thread1 = new Thread(() -> {
-            String link = "http://c9.etf.unsa.ba/proba/postanskiBroj.php?postanskiBroj=71000";
-            link += fieldPostanskiBroj.getText().trim();
-            try {
-                URL url = new URL(link);
-                BufferedReader ulaz = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-                String json = "", line = null;
-                while ((line = ulaz.readLine()) != null)
-                    json = json + line;
-                ulaz.close();
-
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        });
 
 
         int brojStanovnika = 0;
@@ -94,19 +110,70 @@ public class GradController {
         if (brojStanovnika <= 0) {
             fieldBrojStanovnika.getStyleClass().removeAll("poljeIspravno");
             fieldBrojStanovnika.getStyleClass().add("poljeNijeIspravno");
-            sveOk = false;
+            sveOk.set(false);
         } else {
             fieldBrojStanovnika.getStyleClass().removeAll("poljeNijeIspravno");
             fieldBrojStanovnika.getStyleClass().add("poljeIspravno");
         }
 
-        if (!sveOk) return;
+
+        Thread thread1 = new Thread(() -> {
+            String link = "http://c9.etf.unsa.ba/proba/postanskiBroj.php?postanskiBroj=";
+            link += fieldPostanskiBroj.getText().trim();
+            try {
+                URL url = new URL(link);
+                BufferedReader input = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+                String json = "", line = null;
+                while ((line = input.readLine()) != null) {
+                    json += line;
+                }
+                input.close();
+                boolean temp = json.equals("OK");
+                if (temp) {
+                    Platform.runLater(() -> {
+                        fieldPostanskiBroj.getStyleClass().removeAll("poljeNijeIspravno");
+                        fieldPostanskiBroj.getStyleClass().add("poljeIspravno");
+                    });
+
+                } else {
+                    ulazi();
+                    sveOk.set(false);
+                    Platform.runLater(() -> {
+                        fieldPostanskiBroj.getStyleClass().removeAll("poljeIspravno");
+                        fieldPostanskiBroj.getStyleClass().add("poljeNijeIspravno");
+                    });
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        });
+        thread1.start();
+
 
         if (grad == null) grad = new Grad();
         grad.setNaziv(fieldNaziv.getText());
         grad.setBrojStanovnika(Integer.parseInt(fieldBrojStanovnika.getText()));
         grad.setDrzava(choiceDrzava.getValue());
         Stage stage = (Stage) fieldNaziv.getScene().getWindow();
+        grad.setPostanskiBroj(Integer.parseInt(fieldPostanskiBroj.getText()));
         stage.close();
     }
+
+
+    public void actionPromijeni(ActionEvent actionEvent){
+        TextInputDialog dialog = new TextInputDialog("Picture");
+
+        dialog.setTitle("Odabir slike");
+        dialog.setHeaderText("Napisi ime slike:");
+        dialog.setContentText("Slika:");
+
+        Optional<String> result = dialog.showAndWait();
+
+
+    }
+
 }

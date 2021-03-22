@@ -18,6 +18,7 @@
       <RowConstraints />
       <RowConstraints />
       <RowConstraints />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" />
       <RowConstraints />
       <RowConstraints />
    </rowConstraints>
@@ -28,7 +29,7 @@
       <TextField fx:id="fieldBrojStanovnika" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Label text="Država:" GridPane.rowIndex="2" />
       <ChoiceBox fx:id="choiceDrzava" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+      <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
          <buttons>
             <Button fx:id="btnOk" mnemonicParsing="false" onAction="#clickOk" text="Ok" />
             <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#clickCancel" text="Cancel" />
@@ -36,6 +37,8 @@
       </ButtonBar>
       <Label text="Postanski broj:" GridPane.rowIndex="3" />
       <TextField fx:id="fieldPostanskiBroj" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Button mnemonicParsing="false" text="Odaberi sliku " GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <Button fx:id="btnPromijeni" mnemonicParsing="false" onAction="#actionPromijeni" text="Promijeni" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
    </children>
    <opaqueInsets>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
