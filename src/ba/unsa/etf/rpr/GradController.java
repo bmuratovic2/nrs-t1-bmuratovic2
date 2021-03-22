@@ -6,7 +6,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -173,6 +176,25 @@ public class GradController {
 
         Optional<String> result = dialog.showAndWait();
 
+
+    }
+    public void actionOdaberiSliku(ActionEvent actionEvent) throws IOException {
+
+        Stage stage = new Stage();
+        Parent root = null;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pretraga.fxml"));
+            PretragaController pretragaController = new PretragaController(grad);
+            loader.setController(pretragaController);
+            root = loader.load();
+            stage.setTitle("Pretraga datoteka");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.setResizable(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
